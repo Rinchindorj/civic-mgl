@@ -1,26 +1,175 @@
 @import "tailwindcss";
 
+/*
+ * Civic MGL design tokens.
+ * Brand values are injected as inline CSS custom properties on the app wrapper
+ * by AppStateContext (editable live from /admin). These are only the fallbacks.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --brand-primary: #0066ff;
+  --brand-secondary: #0b2265;
+  --bg-app: #f3f7fc;
+  --surface-card: #ffffff;
+  --surface-soft: #eef2f8;
+  --text-main: #1b2433;
+  --text-muted: #6b7689;
+  --line: #e3e9f2;
+  --card-radius: 16px;
+  --outside: #dde3ec;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-brand: var(--brand-primary);
+  --color-navy: var(--brand-secondary);
+  --color-app: var(--bg-app);
+  --color-card: var(--surface-card);
+  --color-soft: var(--surface-soft);
+  --color-ink: var(--text-main);
+  --color-muted: var(--text-muted);
+  --color-line: var(--line);
+  --radius-card: var(--card-radius);
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+html,
+body {
+  background: var(--outside);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --outside: #05080f;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Fixed layers (bottom nav, sheets, toasts) stay inside the 430px mobile frame */
+.frame-fixed {
+  position: fixed;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: 430px;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.brand-gradient {
+  background-image: linear-gradient(
+    100deg,
+    color-mix(in srgb, var(--brand-primary) 82%, #000) 0%,
+    var(--brand-primary) 100%
+  );
+}
+
+.hero-glow {
+  background:
+    radial-gradient(120% 70% at 50% 0%, color-mix(in srgb, var(--brand-primary) 16%, transparent) 0%, transparent 70%),
+    var(--bg-app);
+}
+
+.search-ring {
+  background:
+    linear-gradient(var(--surface-card), var(--surface-card)) padding-box,
+    linear-gradient(90deg, var(--brand-primary), #8b5cf6 55%, var(--brand-primary)) border-box;
+  border: 2px solid transparent;
+}
+
+@keyframes scanline {
+  0% { top: 6%; }
+  50% { top: 90%; }
+  100% { top: 6%; }
+}
+.animate-scanline {
+  animation: scanline 2.6s ease-in-out infinite;
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-toast {
+  animation: toast-in 0.2s ease-out;
+}
+
+/* Bottom sheet travels the full distance from the bottom edge. */
+@keyframes sheet-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.animate-sheet {
+  animation: sheet-up 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes sheet-down {
+  from { transform: translateY(0); }
+  to { transform: translateY(100%); }
+}
+.animate-sheet-out {
+  animation: sheet-down 0.28s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+@keyframes pop-in {
+  from { transform: scale(0.96); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.animate-pop {
+  animation: pop-in 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+.animate-fade-out {
+  animation: fade-out 0.28s ease-in forwards;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fade {
+  animation: fade-in 0.18s ease-out;
+}
+
+@keyframes drawer-in {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+.animate-drawer {
+  animation: drawer-in 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes orb-spin {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(360deg) scale(1.12); }
+  100% { transform: rotate(720deg) scale(1); }
+}
+.animate-orb-spin {
+  animation: orb-spin 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-orb-spin,
+  .animate-ping,
+  .animate-scanline,
+  .animate-toast,
+  .animate-sheet,
+  .animate-sheet-out,
+  .animate-pop,
+  .animate-fade-out,
+  .animate-fade,
+  .animate-drawer {
+    animation: none;
+  }
 }
