@@ -24,9 +24,8 @@ function HeaderShell({ children }: { children: ReactNode }) {
 }
 
 function HomeLink() {
-  const name = useAppState().state.themeConfig.brandName || "Civic MGL";
   return (
-    <Link href="/" aria-label={`${name} нүүр`} className="mr-auto min-w-0">
+    <Link href="/" aria-label="Нүүр хуудас" className="mr-auto min-w-0">
       <BrandLogo />
     </Link>
   );

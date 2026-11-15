@@ -36,11 +36,13 @@ function LivePreview() {
           <div className="flex items-center gap-1 px-2 pt-2">
             {t.brandLogoUrl ? (
               // eslint-disable-next-line @next/next/no-img-element -- admin-uploaded data URL
-              <img src={t.brandLogoUrl} alt="" className="size-4 rounded object-contain" />
+              <img src={t.brandLogoUrl} alt="" className="h-4 w-auto max-w-[80px] object-contain" />
             ) : (
-              <Emblem className="size-4" />
+              <>
+                <Emblem className="size-4" />
+                <span className="truncate text-[8px] font-extrabold text-navy">Civic MGL</span>
+              </>
             )}
-            <span className="truncate text-[8px] font-extrabold text-navy">{t.brandName || "Civic MGL"}</span>
           </div>
           <div className="m-2 h-5 rounded-full search-ring" />
           <div className="mx-2 grid grid-cols-2 gap-1">

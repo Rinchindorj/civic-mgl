@@ -1,43 +1,27 @@
 "use client";
 
 import { useRef } from "react";
-import { Check, Moon, RotateCcw, Sun, Trash2, Upload } from "lucide-react";
-import { DEFAULT_THEME, useAppState, type ThemeConfig } from "@/context/AppStateContext";
+import { Check, Moon, Sun, Trash2, Upload } from "lucide-react";
+import { useAppState, type ThemeConfig } from "@/context/AppStateContext";
 import { Button, Toggle } from "@/components/ui";
 import { Logo } from "@/components/Logo";
 import { cn, fileToLogo } from "@/lib/utils";
-import { AdminCard, TextField } from "./fields";
+import { AdminCard } from "./fields";
 
-/** Brand Logo uploader + name/subtitle shown in the Нүүр / Үйлчилгээ / Нэмэлт headers. */
+/** Header logo uploader: an image only, no brand text. */
 function BrandCard() {
   const { state, setTheme, toast } = useAppState();
   const t = state.themeConfig;
   const fileRef = useRef<HTMLInputElement>(null);
-  const changed =
-    t.brandName !== DEFAULT_THEME.brandName || t.brandSubtitle !== DEFAULT_THEME.brandSubtitle || t.brandLogoUrl !== DEFAULT_THEME.brandLogoUrl;
 
   return (
-    <AdminCard
-      title="Брэнд лого & нэр"
-      desc="Нүүр, Үйлчилгээ, Нэмэлт хуудасны толгой хэсэгт харагдана"
-      action={
-        changed && (
-          <button
-            type="button"
-            onClick={() => setTheme({ brandName: DEFAULT_THEME.brandName, brandSubtitle: DEFAULT_THEME.brandSubtitle, brandLogoUrl: "" })}
-            className="flex items-center gap-1 text-[12.5px] font-bold text-brand"
-          >
-            <RotateCcw className="size-3.5" /> Анхны
-          </button>
-        )
-      }
-    >
-      <div className="rounded-xl bg-app p-3 ring-1 ring-line">
-        <Logo name={t.brandName || "Civic MGL"} subtitle={t.brandSubtitle} logoUrl={t.brandLogoUrl} />
+    <AdminCard title="Лого" desc="Нүүр, Үйлчилгээ, Нэмэлт хуудасны дээд хэсэгт зөвхөн энэ зураг харагдана">
+      <div className="flex h-[72px] items-center rounded-xl bg-app px-4 ring-1 ring-line">
+        <Logo logoUrl={t.brandLogoUrl} />
       </div>
       <div className="mt-3 flex gap-2">
         <Button variant="soft" className="h-11 flex-1" onClick={() => fileRef.current?.click()}>
-          <Upload className="size-4" /> Лого оруулах
+          <Upload className="size-4" /> {t.brandLogoUrl ? "Лого солих" : "Лого оруулах"}
         </Button>
         {t.brandLogoUrl && (
           <Button variant="danger" className="h-11" onClick={() => setTheme({ brandLogoUrl: "" })} aria-label="Лого устгах">
@@ -55,7 +39,7 @@ function BrandCard() {
             if (!f) return;
             if (!f.type.startsWith("image/")) return toast("Зөвхөн зураг оруулна уу", "error");
             try {
-              setTheme({ brandLogoUrl: await fileToLogo(f) });
+              setTheme({ brandLogoUrl: await fileToLogo(f, 512) });
               toast("Лого шинэчлэгдлээ", "success");
             } catch {
               toast("Зургийг уншиж чадсангүй", "error");
@@ -63,11 +47,7 @@ function BrandCard() {
           }}
         />
       </div>
-      <div className="mt-3 space-y-2.5">
-        <TextField label="Брэнд нэр (brandName)" value={t.brandName} onChange={(brandName) => setTheme({ brandName })} />
-        <TextField label="Дэд гарчиг (brandSubtitle)" value={t.brandSubtitle} onChange={(brandSubtitle) => setTheme({ brandSubtitle })} />
-      </div>
-      <p className="mt-2 text-[12px] text-muted">Сүүлийн үг үндсэн өнгөөр харагдана. Лого 256px хүртэл жижигрээд хадгалагдана.</p>
+      <p className="mt-2 text-[12px] text-muted">PNG (тунгалаг дэвсгэртэй) эсвэл SVG зөвлөмжтэй. Устгавал анхны лого харагдана.</p>
     </AdminCard>
   );
 }

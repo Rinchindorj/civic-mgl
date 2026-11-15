@@ -3,8 +3,8 @@
 import { useAppState } from "@/context/AppStateContext";
 import { Logo } from "./Logo";
 
-/** Logo wired to the admin-editable brand (themeConfig.brandName / brandSubtitle / brandLogoUrl). */
-export function BrandLogo({ className, compact }: { className?: string; compact?: boolean }) {
+/** Header logo: the admin-uploaded image (themeConfig.brandLogoUrl), or the built-in one. */
+export function BrandLogo({ className }: { className?: string }) {
   const t = useAppState().state.themeConfig;
-  return <Logo className={className} compact={compact} name={t.brandName || "Civic MGL"} subtitle={t.brandSubtitle} logoUrl={t.brandLogoUrl} />;
+  return <Logo className={className} logoUrl={t.brandLogoUrl} />;
 }

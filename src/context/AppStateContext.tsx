@@ -53,9 +53,7 @@ export interface ThemeConfig {
   bgColor: string;
   cardRadius: 12 | 16 | 24;
   darkMode: boolean;
-  /** Header brand: name, subtitle, and an optional uploaded logo (data URL or https URL). */
-  brandName: string;
-  brandSubtitle: string;
+  /** Uploaded header logo image (data URL). Empty → built-in Civic MGL logo. */
   brandLogoUrl: string;
 }
 
@@ -195,8 +193,6 @@ export const DEFAULT_THEME: ThemeConfig = {
   bgColor: "#F3F7FC",
   cardRadius: 16,
   darkMode: false,
-  brandName: "Civic MGL",
-  brandSubtitle: "Цахим үйлчилгээний нэгдсэн систем",
   brandLogoUrl: "",
 };
 
@@ -378,6 +374,10 @@ function hydrate(saved: Partial<AppState> | undefined, email: string): AppState 
     notifPrefs: { ...defaults.notifPrefs, ...saved.notifPrefs },
   };
   delete merged.loggedIn; // removed field from the single-user version
+  // Brand text was dropped: the header brand is now only an uploaded image.
+  const theme = merged.themeConfig as ThemeConfig & { brandName?: unknown; brandSubtitle?: unknown };
+  delete theme.brandName;
+  delete theme.brandSubtitle;
   return merged;
 }
 
